@@ -1,5 +1,6 @@
 "use strict";
 import fs from "fs";
+let osName = process.platform;
 
 interface ICreateType {
   log(msg: string, object: any): any;
@@ -63,15 +64,21 @@ const BebeLog = (paramsGlobal: BebeLogParams): any => {
       let textObject = undefined;
       let textObjectTerminal = undefined;
 
+      let lineEnding = "\n";
+
+      if (osName == "win32") {
+        lineEnding = "\r\n";
+      }
+
       if (object) {
         let objectMsg = JSON.stringify(object);
         textObject = ` ${new Date().toLocaleString()} ${
           params.type
-        } ${msg} => ${objectMsg} \n`;
+        } ${msg} => ${objectMsg} ${lineEnding}`;
 
         textObjectTerminal = ` ${color} ${new Date().toLocaleString()} ${
           params.type
-        } \x1b[0m ${msg} => ${objectMsg} \n`;
+        } \x1b[0m ${msg} => ${objectMsg} ${lineEnding}`;
       }
 
       const textTerminal = ` ${color} ${new Date().toLocaleString()} ${
