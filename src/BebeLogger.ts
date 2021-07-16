@@ -95,10 +95,12 @@ const BebeLog = (paramsGlobal: BebeLogParams): any => {
         }
       }
 
-      if (!params.disableFileLog && textObject) {
-        stream.write(textObject);
-      } else {
-        stream.write(text);
+      if (!params.disableFileLog) {
+        if (textObject) {
+          stream.write(textObject);
+        } else {
+          stream.write(text);
+        }
       }
     };
 

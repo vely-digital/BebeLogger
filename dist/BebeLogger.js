@@ -56,11 +56,13 @@ const BebeLog = (paramsGlobal) => {
                     console.log(textTerminal);
                 }
             }
-            if (!params.disableFileLog && textObject) {
-                stream.write(textObject);
-            }
-            else {
-                stream.write(text);
+            if (!params.disableFileLog) {
+                if (textObject) {
+                    stream.write(textObject);
+                }
+                else {
+                    stream.write(text);
+                }
             }
         };
         return {
