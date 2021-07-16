@@ -17,6 +17,7 @@ interface BebeLogParams {
 
 interface BebeLogTypeParams {
   consoleLog: boolean;
+  disableFileLog: boolean;
   type: string;
   file: string;
   colorOverride?: string;
@@ -49,12 +50,13 @@ const BebeLog = (paramsGlobal: BebeLogParams): any => {
   };
 
   const createType = (params: BebeLogTypeParams): ICreateType => {
-    const stream = fs.createWriteStream(
-      paramsGlobal.rootPath + "/" + params.file,
-      {
+    let stream: any = undefined;
+
+    if (!params.disableFileLog) {
+      stream = fs.createWriteStream(paramsGlobal.rootPath + "/" + params.file, {
         flags: "a",
-      }
-    );
+      });
+    }
 
     let color: string = selectColor(params.type, params.colorOverride);
 
@@ -93,7 +95,7 @@ const BebeLog = (paramsGlobal: BebeLogParams): any => {
         }
       }
 
-      if (textObject) {
+      if (!params.disableFileLog && textObject) {
         stream.write(textObject);
       } else {
         stream.write(text);
