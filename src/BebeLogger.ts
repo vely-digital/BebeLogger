@@ -18,46 +18,6 @@ interface BebeLogParams {
   rootPath: string;
 }
 
-export function get(belowFn: any) {
-  const oldLimit = Error.stackTraceLimit;
-  Error.stackTraceLimit = Infinity;
-
-  const dummyObject: any = {};
-
-  const v8Handler = Error.prepareStackTrace;
-  Error.prepareStackTrace = function (dummyObject, v8StackTrace) {
-    return v8StackTrace;
-  };
-  Error.captureStackTrace(dummyObject, belowFn || get);
-
-  let v8StackTrace = dummyObject.stack;
-  Error.prepareStackTrace = v8Handler;
-  Error.stackTraceLimit = oldLimit;
-
-  v8StackTrace = v8StackTrace.filter((c: any) => {
-    const fileName = c.getFileName();
-    if (/(node:internal)|(node_modules)/g.test(fileName)) {
-      return false;
-    }
-    return true;
-  });
-
-  v8StackTrace.shift();
-
-  const fullPath = v8StackTrace[1].getFileName();
-
-  const splitedPath = fullPath.split("/");
-
-  const splitedName =
-    splitedPath[splitedPath.length - 2] +
-    "/" +
-    splitedPath[splitedPath.length - 1];
-
-  return splitedName;
-}
-
-const trace: any = get(this);
-
 interface BebeLogTypeParams {
   consoleLog: boolean;
   disableFileLog: boolean;
@@ -129,16 +89,17 @@ const BebeLog = (paramsGlobal: BebeLogParams): any => {
 
           textObjectTerminal = ` ${color} ${new Date().toLocaleString()} ${
             params.type
-          } \x1b[0m \u001b[30;1m ${trace} \x1b[0m ${msg} => ${objectMsg} ${lineEnding}`;
+          } \x1b[0m \u001b[30;1m \x1b[0m ${msg} => ${lineEnding}`;
         }
 
         const textTerminal = ` ${color} ${new Date().toLocaleString()} ${
           params.type
-        } \x1b[0m \u001b[30;1m ${trace} \x1b[0m ${msg} \n`;
+        } \x1b[0m \u001b[30;1m \x1b[0m ${msg} \n`;
 
         if (paramsGlobal.consoleLog && params.consoleLog != false) {
           if (textObject) {
             console.log(textObjectTerminal);
+            console.log(object);
           } else {
             console.log(textTerminal);
           }

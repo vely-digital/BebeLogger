@@ -12,4 +12,6 @@ const logger = loggerMain.logs;
 
 console.log(logger);
 
+logger.error("test bare NO OBJECT");
+
 logger.error("test bare", { testObject: "test" });
